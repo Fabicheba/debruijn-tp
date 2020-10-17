@@ -11,7 +11,8 @@ Année : 2020-2021
 
 # Modules utiles
 import argparse
-
+import networkx as net
+import matplotlib.pyplot as plt
 # Fonctions
 
 def argument():
@@ -121,19 +122,25 @@ def build_graph(dict_kmer):
                 et comme valeur le poids(occurence du kmer)
 
     """
-    graphe={}
+    graphe=net.DiGraph()
     for i in dict_kmer:
         prefixe = i[:-1]
         suffixe = i[1:]
         poids = dict_kmer[i]
-        graphe[(prefixe, suffixe)] = poids
-
+        graphe.add_edge(prefixe, suffixe, weight= poids)
+    net.draw(graphe)
+    plt.show()
     return graphe
 
 
-# 2 Parcours du graphe de de Bruijn /7
+# 2 Parcours du graphe de de Bruijn
 
-
+"""def get_starting_nodes(graphe):
+    pref_suff=list(graphes.keys())
+    entree=[]
+    for i in len(range(pref_suf)-1):
+        for j in len(range(1,pref_suff)):
+            if pref_suff[i][0] != pref_suff[j][0]"""
 
 # Programme principal
 if __name__ == "__main__":
