@@ -243,7 +243,39 @@ def path_average_weigth(graphe, chemin):
 
     """
     poids = 0
-    for i in range(len())
+    for i in range(len(chemin)-1):
+        poids += graphe.edges[chemin[i], chemin[i+1]]["weigth"]
+    return poids/(len(path)-1) # poids moyen
+
+
+def remove_paths(graphe, liste_chemin, delete_entry_node,
+                    delete_sink_node):
+    """" fonction qui permet de nettoyer le graphe,
+        en supprimant les chemins indésirables
+    Parametres
+    ----------
+    graphe: Graphe Networkx, issu de la fonction build_graphe
+    liste_chemin: chemin dans le graphe
+    delete_entry_node: booleen
+        pour indiquer si les noeuds d’entrée seront supprimés
+    delete_sink_node: booleen
+        pour indiquer si les noeuds
+         de sortie seront supprimés
+    Return
+    -------
+    graphe: nettoyé des chemins indésirables
+
+    """
+    entry = sink = 1
+    if delete_entry_node:
+        entry = 0
+    if delete_sink_node:
+        sink = 0
+    for chemin in liste_chemin:
+        for i in range(entry, len(chemin) - sink):
+            graphe.remove_node(chemin[i])
+    return graphe
+
 
 # Programme principal
 if __name__ == "__main__":
