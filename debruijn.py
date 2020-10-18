@@ -199,7 +199,7 @@ def get_contigs(graphe, noeuds_entree, noeuds_sortie):
     return liste_contigs
         
 
-def fill(text, width=80):
+def fill(text, width = 80):
     """Split text with a line return to respect fasta format"""
     return os.linesep.join(text[i:i+width] for i in range(0, len(text), width))
 
@@ -209,7 +209,7 @@ def save_contigs(liste_contigs, contigs_file):
         num_contig = 0
         for contig in liste_contigs:
             num_contig += 1
-            f_contig.write{">contig_{}  len = {}\n".format(num_contig, contig[1])}
+            f_contig.write(">contig_{}\tlen = {}\n".format(num_contig, contig[1]))
             f_contig.write(fill(contig[0]) + "\n")
 
 
@@ -277,14 +277,17 @@ def remove_paths(graphe, liste_chemin, delete_entry_node,
     return graphe
 
 
-# Programme principal
-if __name__ == "__main__":
-    fastq, k, contig = argument()
+def main():
+    fastq, k, contig_file = argument()
     kmer = build_kmer_dict(fastq, k)
-    #print(kmer)
     graphe= build_graph(kmer)
     entree=get_starting_nodes(graphe)
     sortie= get_sink_nodes(graphe)
     contig = get_contigs(graphe, entree, sortie)
-    print(entree, sortie)
-    print(contig)
+    save_contigs(contig, contig_file )
+# Programme principal
+if __name__ == "__main__":
+    main()
+    
+    #print(kmer)
+    
