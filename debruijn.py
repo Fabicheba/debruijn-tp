@@ -12,10 +12,12 @@ Année : 2020-2021
 # Modules utiles
 
 import argparse
-import networkx as net
-import matplotlib.pyplot as plt
 import os
 from statistics import stdev
+import networkx as net
+import matplotlib.pyplot as plt
+
+
 
 # Fonctions
 
@@ -64,7 +66,8 @@ def read_fastq(fastq_file):
     """
     with open(fastq_file, "r") as fast:
         for ligne in fast:
-            if not ligne.startswith("@") and (not ligne.startswith("+")) and (not ligne.startswith("J")):
+            if not ligne.startswith("@") and ((not ligne.startswith("+"))
+                                       and (not ligne.startswith("J"))):
                 yield ligne[:-1]
 
 
@@ -140,7 +143,7 @@ def build_graph(dict_kmer):
 # 2 Parcours du graphe de de Bruijn
 
 def get_starting_nodes(graphe):
-    """" fonction qui prend en entrée un graphe et 
+    """" fonction qui prend en entrée un graphe et
         retourne une liste de noeuds d'entrée
     Parametres
     ----------
@@ -158,7 +161,7 @@ def get_starting_nodes(graphe):
 
 
 def get_sink_nodes(graphe):
-    """" fonction qui prend en entrée un graphe et 
+    """" fonction qui prend en entrée un graphe et
         retourne une liste de noeuds de sortie
     Parametres
     ----------
@@ -176,7 +179,7 @@ def get_sink_nodes(graphe):
 
 def get_contigs(graphe, noeuds_entree, noeuds_sortie):
     """" fonction qui prend un graphe, une liste de noeuds
-        d’entrée et une liste de sortie et retourne une 
+        d’entrée et une liste de sortie et retourne une
         liste de tuple(contig, taille du contig)
     Parametres
     ----------
@@ -197,7 +200,7 @@ def get_contigs(graphe, noeuds_entree, noeuds_sortie):
                     contig += chemin[i][-1]
                 liste_contigs.append((contig, len(contig)))
     return liste_contigs
-        
+
 
 def fill(text, width = 80):
     """Split text with a line return to respect fasta format"""
@@ -205,6 +208,13 @@ def fill(text, width = 80):
 
 
 def save_contigs(liste_contigs, contigs_file):
+    """" fonction qui permet de generer un fichier de
+         sortie au format fasta avec les sequences de contigs
+    Parametres
+    ----------
+    liste_contigs:
+    contigs_file: fichier de sortie
+    """
     with open(contigs_file, "w") as f_contig:
         num_contig = 0
         for contig in liste_contigs:
@@ -225,7 +235,7 @@ def std(val_liste):
     Return
     -------
     ecart_type: ecart type de la valeur de la liste en entree
-    
+
     """
     return stdev(val_liste)
 
@@ -245,7 +255,7 @@ def path_average_weigth(graphe, chemin):
     poids = 0
     for i in range(len(chemin)-1):
         poids += graphe.edges[chemin[i], chemin[i+1]]["weigth"]
-    return poids/(len(path)-1) # poids moyen
+    return poids/(len(chemin)-1) # poids moyen
 
 
 def remove_paths(graphe, liste_chemin, delete_entry_node,
@@ -278,16 +288,21 @@ def remove_paths(graphe, liste_chemin, delete_entry_node,
 
 
 def main():
+    """ fonction du programme principal"""
+    # Arguments
     fastq, k, contig_file = argument()
+    # Géneration du dico kmer
     kmer = build_kmer_dict(fastq, k)
+    # géreration du graphe à partir du dico kmer
     graphe= build_graph(kmer)
-    entree=get_starting_nodes(graphe)
+    # liste des noeuds d'entree
+    entree = get_starting_nodes(graphe)
+    # Liste des noeuds de sortie
     sortie= get_sink_nodes(graphe)
     contig = get_contigs(graphe, entree, sortie)
     save_contigs(contig, contig_file )
+    plt.show()
 # Programme principal
 if __name__ == "__main__":
     main()
-    
-    #print(kmer)
-    
+ 
